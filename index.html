@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project3</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://d3js.org/topojson.v3.min.js"></script>
+    <style>
+        .legend span {
+            margin-right: 10px;
+        }
+        
+        .gridlines line {
+            stroke: #bbb;
+        }
+        
+        .gridlines .domain {
+            stroke: none;
+        }
+        
+        div.tooltip {
+            position: relative;
+            text-align: center;
+            width: 150px;
+            height: 28px;
+            padding: 2px;
+            font: 12px sans-serif;
+            background: lightsteelblue;
+            border: 0px;
+            border-radius: 8px;
+            pointer-events: none;
+        }
+        
+        .country {
+            fill: white;
+        }
+        
+        g.mouseover rect {
+            fill: white;
+            stroke: #222;
+            stroke-width: 1px;
+        }
+        
+        .outline {
+            stroke: #bbb;
+            stroke-width: 1px;
+            fill: none;
+        }
+        
+        .graticule {
+            fill: none;
+            stroke: black;
+            stroke-width: 1px;
+        }
+        
+        .gridlines line {
+            stroke: #bbb;
+        }
+        
+        .gridlines .domain {
+            stroke: none;
+        }
+        
+        .footer {
+            margin: 0;
+            padding-top: 1em;
+            padding-bottom: 1em;
+            text-align: center;
+            background-color: #e0e0e0;
+            font-family: -apple-system, system-ui, BlinkMacSystemFont;
+        }
+        /*        .button {
+            background-color: rgb(181, 222, 43);
+        }*/
+        
+        .footer {
+            margin: 0;
+            padding-top: 1em;
+            padding-bottom: 1em;
+            text-align: center;
+            background-color: #e0e0e0;
+            font-family: -apple-system, system-ui, BlinkMacSystemFont;
+        }
+        
+        #mapDiv {
+            text-align: center;
+            float: center;
+            display: block;
+            align: center;
+            /* margin-left: 50px; */
+            /* margin-right: 50px; */
+            margin-top: 50px;
+            border-color: black;
+        }
+        
+        #container {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            /* font-family: 'Michroma'; */
+            font-family: -apple-system, system-ui, BlinkMacSystemFont;
+            font-size: 22px;
+            color: #484848;
+            margin-left: 150px;
+        }
+        
+        .container {
+            justify-content: center;
+        }
+        
+        #scatterplotdiv {
+            text-align: center;
+        }
+        
+        #secondbutton {
+            text-align: center;
+            float: right;
+            flex-direction: row;
+        }
+        
+        .label {
+            float: right;
+        }
+        /*        #my_dataviz {
+            float: right;
+        }*/
+        
+        #title {
+            font-family: -apple-system, system-ui, BlinkMacSystemFont;
+            font-weight: 650;
+            text-align: center;
+            font-size: 40px;
+            color: #555;
+        }
+        
+        #text {
+            position: relative;
+            margin-left: 16%;
+            margin-right: 16%;
+            /* font-family: 'Michroma'; */
+            font-family: -apple-system, system-ui, BlinkMacSystemFont;
+            font-size: 22px;
+            text-align: left;
+            color: #555;
+        }
+        
+        #descriptive-title {
+            font-family: -apple-system, system-ui, BlinkMacSystemFont;
+            font-weight: 650;
+            text-align: center;
+            font-size: 20px;
+            color: #555;
+        }
+        
+        #descriptive-text {
+            position: relative;
+            margin-left: 16%;
+            margin-right: 16%;
+            /* font-family: 'Michroma'; */
+            font-family: -apple-system, system-ui, BlinkMacSystemFont;
+            font-size: 18px;
+            text-align: center;
+            color: #555;
+        }
+        
+        #legends {
+            position: relative;
+            margin-left: 16%;
+            margin-right: 16%;
+            /* font-family: 'Michroma'; */
+            font-family: -apple-system, system-ui, BlinkMacSystemFont;
+            font-size: 18px;
+            text-align: center;
+            color: #555;
+        }
+        
+        #countriesMap {
+            FONT-WEIGHT: 200;
+            background-color: #F5F5F5;
+            /* stroke: black; */
+            /* border: black; */
+            text-align: center;
+            float: center;
+            flex-direction: row;
+        }
+        
+        .button {
+            width: 200px;
+            width: 100px;
+            padding: 10px;
+            padding-right: 10px;
+            margin-right: 10px;
+        }
+        
+        .containerfix {
+            display: flex;
+            flex-flow: row wrap;
+            justify-content: center;
+            padding: 0;
+            margin: 0;
+            list-style: none;
+            gap: 15px;
+        }
+    </style>
+
+    <script type="text/javascript">
+        function closeAndRefresh() {
+            window.location.reload(true);
+        }
+    </script>
+</head>
+
+<body>
+    <!-- <span onclick="closeAndRefresh();">&#10006;</span> -->
+    <div style="background: #f5f5f7;">
+        <br>
+        <p id="title">What factors contributed to our happiness?
+        </p>
+        <p id="text">
+            In the last 5 years, the global economy was rapidly developing before the COVID hit the world. The World Happiness Report is a comprehensive report released at the UN that aimed to find the correlation between the happiness index with socioeconomical
+            factors like economics, psychology, survey analysis, corruption and etc. We would like to explore how the happiness index is correlated with different factors that mentioned in the World Happiness Report in this project.
+
+        </p>
+        <br>
+
+    </div>
+
+    <div id="scatterplotdiv">
+        <p id="descriptive-title">
+            Part I: How does each country's GDP and location contributes to its happiness index
+        </p>
+        <p id="descriptive-text">
+            First, let's take a general look about the correlation between a country's GDP index, region and its happiness index respectivelly. Our interactive visualization in this part is aimed to show the correlations between variables that mentioned above in
+            a direct and clear way. You can move your mouse on each data point to see the details of the data.
+        </p>
+        <svg id="scatterplot" height="600" width="900" style="margin-top:50px" />
+        <text id='label' x='400' y='400' text-anchor='end' alighment-baseline='hanging'> </text>
+        <p id="descriptive-title">
+            Legends for showing country's regions
+        </p>
+        <svg id="legends" height="100" width="900" style="margin-top:50px" />
+    </div>
+
+    <div style="background: #f5f5f7;">
+        <br>
+        <p id="descriptive-title">
+            Part II: For each individual factors that contributed to the happiness index, which country did the best?
+        </p>
+        <p id="descriptive-text">
+            There are multiple factors that helps to contribute to its happiness index. The extents of family(Family), each country's economical development(GDP), the life expectancy(Life), personal freedom(Freedom), extent of corruption(Trust) and Generosity of
+            each country's people all contributed to its happiness index score. If you want to know which country does the best on certain factors, you could click on the buttons below the lollipop chart and zoom in and out with the map to see what happens.
+        </p>
+        <br>
+
+    </div>
+
+    <div id="mapDiv">
+
+        <h4 id="descriptive-text">Choose a filter</h4>
+        <div id="buttonPanel"> </div>
+        <br>
+        <br>
+        <ul class="containerfix">
+
+            <svg id="countriesMap" height="400" width="600"></svg>
+
+            <div id="secondbutton">
+                <div id="secondtitle">
+                    <ul id="sectitle">What's the Top Ten Country ranked for each categories you selected?</ul>
+                </div>
+                <div id="my_dataviz"></div>
+                <script type="text/javascript" src="script.js"></script>
+                <!--       <button onclick="update('Family')">Family</button>
+          <button onclick="update('GDP')">GDP</button>
+          <button onclick="update('Generosity')">Generosity</button>
+          <button onclick="update('Trust')">Trust</button>
+          <button onclick="update('Freedom')">Freedom</button>
+          <button onclick="update('Life')">Life</button> -->
+            </div>
+
+
+        </ul>
+
+    </div>
+
+    <!--     <div style="background: #f5f5f7;">
+        <br>
+        <p id="descriptive-title">placeholder of subtitles
+        </p>
+        <p id="descriptive-text">
+            Placeholder texts for storytelling the map
+        </p>
+        <br>
+
+    </div> -->
+
+
+    <br/>
+
+    <br/><br/><br/><br/><br/>
+    <br/>
+
+
+
+    <div class="footer">
+        <p id="main-subtitle">
+            <b>INFO 5100 - FA2021 - Project 3</b>
+            <br>
+            <p></p>Group Members: Yunjiao Chai (yc886), Marcus Fang (df375), Chandana Kotta (hck48), Zhenxian Lu (zl747)
+
+
+        </p>
+        <p style="text-align: center; font-size: 80%; color: #7c7c7f;">
+            Data Source:
+            <a href="https://www.kaggle.com/unsdsn/world-happiness?select=2016.csv" target="_blank">World Happiness Report from Kaggle
+          </a>
+        </p>
+    </div>
+
+</body>
+
+</html>
